@@ -15,12 +15,8 @@ STEP 1  - google-shell ... mkdir and clone repo
 > git clone https://github.com/manbobo2002/docker.git
 ```
 
-STEP 2  - Run Auth Login ... follow instructions
-```
-
-```
-
-STEP 3 - setup cloud-shell environment ... all are in ./setup.sh   
+Note this step is not needed on local environment ... but may be required in cloudshell
+STEP 2 - setup cloud-shell environment and auth login ... all are in ./setup.sh   
 ```
 > gcloud auth login
 > gcloud config set project alg-analytics-247823  
@@ -28,7 +24,7 @@ STEP 3 - setup cloud-shell environment ... all are in ./setup.sh
 > gcloud config set compute/region us-central1  
 ```
 
-STEP 4  ... if node is not already installed, test with > node -v
+STEP 3  ... if node is not already installed, test with > node -v
 https://cloud.google.com/nodejs/docs/setup  
 ```
 > nvm install stable
@@ -49,10 +45,7 @@ npm is the Node Package Manager for Node.js and is normally installed alongside 
 ```
 npm install --save express
 ```
-
-
 # Test app.js on cloud-shell
-
 
 run the app
 ```
