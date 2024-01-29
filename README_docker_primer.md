@@ -3,21 +3,35 @@
 
 
 # Table of Contents  <!-- omit from toc -->
+- [Install Docker](#install-docker)
 - [Docker Commands](#docker-commands)
+- [Dockerfile Example](#dockerfile-example)
 - [Docker Run vs Docker Compose](#docker-run-vs-docker-compose)
 - [Docker Run](#docker-run)
 - [Docker Compose](#docker-compose)
 - [Docker Bind Mounts and Volumes](#docker-bind-mounts-and-volumes)
+- [Docker base Images](#docker-base-images)
 
+
+# Install Docker
+
+On your mac install or upgrade docker with 
+
+```sh
+$ brew install docker
+$ # or
+$ brew upgrade docker
+```
 
 
 # Docker Commands 
 
-
 Stackoverflow 
 https://stackoverflow.com/questions/33907835/docker-error-cannot-delete-docker-container-conflict-unable-to-remove-reposito
 ```
-Save this answer.
+Short Primer                extended from the StackOverflow response.
+
+Images vs. Container
 There is a difference between docker images and docker containers. Check this SO Question.
 
 In short, a container is a runnable instance of an image. which is why you cannot delete an image if there is a running container from that image. You just need to delete the container first.
@@ -51,8 +65,41 @@ docker container rm <container_id>  # remove a container
 docker image rm <image_id>   # remove an image
 
 docker system prune -a      # remove everything
-```
 
+docker rename CONTAINER NEW_NAME
+```
+# Dockerfile Example
+
+```
+# For more information, please refer to https://aka.ms/vscode-docker-python
+FROM python:3.10-slim
+
+# expose a port
+EXPOSE 5002
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+# Install pip requirements
+COPY requirements.txt .
+RUN python -m pip install -r requirements.txt
+
+WORKDIR /app
+COPY . /app
+
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
+USER appuser
+
+# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
+CMD ["gunicorn", "--bind", "0.0.0.0:5002", "server:app"]
+
+
+```
 # Docker Run vs Docker Compose 
 https://linuxhint.com/docker-run-vs-docker-compose/
 
@@ -84,7 +131,9 @@ docker build -t go-image -f main1.dockerfile .
 
 docker run -d -p 8080:8080 go-image
 
-The “-d” flag will execute the container in detached mode, and “-p” specifies the local host port to expose the container
+`-d` flag will execute the container in detached mode (i.e., background), and 
+
+`-p` specifies map host port 8080 to container port 8080
 
 **Step 3:** List all Containers
 
@@ -102,6 +151,8 @@ localhost:8080
 https://linuxhint.com/docker-run-vs-docker-compose/
 
 While the “docker-compose” command reads instructions from the “docker-compose.yml” file and is used to manage and run multi-container applications. In other words, it can create and execute more than one container at a time
+
+**Example**
 
 **Step 1:** Create “docker-compose.yml” File
 First, create a file named “docker-compose.yml” file and configure the services required to execute. For instance, we have configured the following configurations:
@@ -199,3 +250,20 @@ docker run -it --name volume1 --mount type=volume,source=logdata,target=c:\logda
 ```
 
 From inside my new container, I should now see a folder on the C:\ drive called logdata, which currently has no data in it.
+
+# Docker base Images
+
+ Docker works through application of layers that are added to the base image. Since Docker uses a Union File System, the processes think the whole file system is mounted read-write. But all the changes go to the top-most writable layer, and underneath, the original file in the read-only image is unchanged.
+
+ ![Docker Base Image](./images/docker_base_images.png)
+
+ [Stackoverflow Bawe Images](https://stackoverflow.com/questions/20274162/why-do-you-need-a-base-image-with-docker)
+
+You may use any flavor of base image whatever is your host. 
+
+Python Base IMages
+* Docker Python base images, https://hub.docker.com/_/python, accessed January 27, 2024
+
+
+Node Base Images
+* Docker Node base images, https://hub.docker.com/_/node/, accessed January 27, 2024
