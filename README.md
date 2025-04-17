@@ -19,6 +19,9 @@
   - [Choosing the Right Python Docker Image: Slim Buster vs. Alpine vs. Slim Bullseye](#choosing-the-right-python-docker-image-slim-buster-vs-alpine-vs-slim-bullseye)
   - [Differences between Debian and Debian-Slim?](#differences-between-debian-and-debian-slim)
 
+**Background**
+Notes and hints, in one place, to document my Docker understanding for my project needs
+
 # Brief Intro to Docker
 
 Introduction to Docker in the FastAPI with Docker
